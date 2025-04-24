@@ -5,7 +5,13 @@ import HomeScreen from '../screens/HomeScreen'
 import ModeSelectScreen from '../screens/ModeSelectScreen'
 import ResultScreen from '../screens/ResultScreen'
 
-const Stack = createNativeStackNavigator()
+export type RootStackParamList = {
+    Home: undefined
+    ModeSelect: { options: string[] }
+    Result: { mode: string; options: string[] }
+}
+
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 const AppNavigator = () => {
     return (
