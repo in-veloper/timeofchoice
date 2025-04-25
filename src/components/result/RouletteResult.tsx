@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react"
 import { Alert, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
-import Svg, { G, Path, Text as SvgText } from "react-native-svg"
+import Svg, { Circle, G, Path, Text as SvgText } from "react-native-svg"
 
 interface RouletteResultProps {
     options: string[]
 }
 
 const { width } = Dimensions.get('window')
-const size = width * 0.9
+const size = width * 0.8
 const radius = size / 2
 const center = { x: radius, y: radius }
-const colors = ['#2A4D59', '#2D9C8B', '#EAC67A', '#F4A261', '#E76F51', '#D9A5B3']
+const colors = ['#2D9C8B', '#EAC67A', '#F4A261', '#E76F51', '#D9A5B3', '#2A4D59']
 
 const degreesPerOption = (count: number) => 360 / count
 
@@ -75,12 +75,34 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
     return (
         <View style={styles.container}>
             <View style={styles.wheelWrapper}>
+                <Svg width={size + 60} height={size + 60} style={styles.fixedSvg}>
+                    <G>
+                        <Circle
+                            cx={(size + 60) / 2}
+                            cy={(size + 60) / 2}
+                            r={(size + 60) / 2}
+                            fill="#1F2C3A"
+                        />
+                        {[...Array(12)].map((_, i) => {
+                            const angle = (360 / 12) * i
+                            const pos = polarToCartesian((size + 60) / 2, (size + 60) / 2, (size + 60) / 2 - 17, angle)
+                            return (
+                                <Circle
+                                    key={i}
+                                    cx={pos.x}
+                                    cy={pos.y}
+                                    r={6}
+                                    fill="#FFF"
+                                />
+                            )
+                        })}
+                    </G>
+                </Svg>
                 <Image source={require('../../../assets/icons/pin.png')} style={styles.pinIcon} />
                 <View style={styles.centerDisplay} pointerEvents="none">
                     <Text style={styles.centerText}>{selectedLabel || 'START'}</Text>
                 </View>
                 <View style={styles.outerRim} />
-                {/* <View style={styles.pointer} /> */}
                 <Animated.View renderToHardwareTextureAndroid={true} style={[styles.wheelContainer, animatedStyle]}>
                     <Svg width={size} height={size}>
                         <G origin={`${center.x}, ${center.y}`}>
@@ -97,7 +119,7 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
                                         <SvgText
                                             x={textPos.x}
                                             y={textPos.y}
-                                            fill="#fff"
+                                            fill="#FFF"
                                             fontSize="14"
                                             fontWeight="bold"
                                             textAnchor="middle"
@@ -128,9 +150,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FFF',
     },
+    backgroundRim: {
+        position: 'absolute',
+        top: 128,
+        width: size + 35,
+        height: size + 35,
+        borderRadius: (size + 120) / 2,
+        backgroundColor: '#1F2C3A',
+        zIndex: 0,
+    },
     wheelWrapper: {
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    fixedSvg: {
+        position: 'absolute',
+        top: -30,
+        zIndex: 1,
     },
     outerRim: {
         position: 'absolute',
@@ -145,7 +181,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         top: -30,
-        zIndex: 20,
+        zIndex: 200,
         resizeMode: 'contain'
     },
     wheelContainer: {
@@ -159,6 +195,7 @@ const styles = StyleSheet.create({
         borderColor: '#222',
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 100
     },
     centerDisplay: {
         position: 'absolute',
