@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
-import { Alert, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
-import Svg, { Circle, G, Path, Text as SvgText } from "react-native-svg"
+import { useEffect, useState } from 'react'
+import { Alert, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import Svg, { Circle, G, Path, Text as SvgText } from 'react-native-svg'
 
 interface RouletteResultProps {
     options: string[]
@@ -50,16 +50,18 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
 
     const spin = () => {
         const rounds = 5
-        const targetIndex = Math.floor(Math.random() * options.length)
-        const offset = sliceAngle / 2
-        const targetAngle = 360 - (targetIndex * sliceAngle + offset)
-        const nextRotation = rotation.value + 360 * rounds + targetAngle
+        const randomRotation = Math.random() * 360
+        const nextRotation = rotation.value + 360 * rounds + randomRotation
 
         rotation.value = withTiming(nextRotation, {
             duration: 5000,
             easing: Easing.bezier(0.25, 1, 0.5, 1)
         }, () => {
-            runOnJS(setSelectedLabel)(options[targetIndex])
+            const finalRotation = nextRotation % 360
+            // 여기에서: 0도(화살표) 기준, 원판이 얼마나 돌아갔는지 계산
+            const adjustedRotation = (360 - finalRotation) % 360
+            const sliceIndex = Math.floor(adjustedRotation / sliceAngle) % options.length
+            runOnJS(setSelectedLabel)(options[sliceIndex])
         })
     }
 
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F96112',
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 6,
+        elevation: 10,
         borderWidth: 7,
         borderColor: '#FFF',
         zIndex: 999,
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
         color: '#FFF',
     },
     button: {
-        marginTop: 40,
+        marginTop: 60,
         backgroundColor: '#227DBD',
         paddingVertical: 14,
         paddingHorizontal: 24,
@@ -230,4 +232,3 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 })
-  
