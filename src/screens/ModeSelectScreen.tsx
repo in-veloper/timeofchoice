@@ -3,6 +3,7 @@ import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { RootStackParamList } from "../navigations/AppNavigators"
 import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads"
+import { useOptionStore } from "../store/optionStore"
 
 const icons = {
     roulette: require('../../assets/icons/roulette.png'),
@@ -20,6 +21,7 @@ const selectionModes = [
 
 const ModeSelectScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+    const { options } = useOptionStore()
 
     const handleSelect = (mode: 'roulette' | 'card' | 'coin' | 'list') => {
         navigation.navigate('Result', { mode })
@@ -47,15 +49,25 @@ const ModeSelectScreen = () => {
                     keyExtractor={(item) => item.key}
                     numColumns={2}
                     columnWrapperStyle={styles.row}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={styles.card}
-                            onPress={() => handleSelect(item.key as any)}
-                        >
-                            <Image source={item.image} style={styles.iconImage} resizeMode="contain"/>
-                            <Text style={styles.label}>{item.label}</Text>
-                        </TouchableOpacity>
-                    )}
+                    renderItem={({ item }) => {
+                        const isCoin = item.key === 'coin'
+                        const coinDisabled = isCoin && options.length !== 2
+
+                        return (
+                            <TouchableOpacity
+                                style={[styles.card, coinDisabled && styles.disabledCard]}
+                                onPress={() => {
+                                    if(!coinDisabled) {
+                                        handleSelect(item.key as any)
+                                    }
+                                }}
+                                disabled={coinDisabled}
+                            >
+                                <Image source={item.image} style={[styles.iconImage, coinDisabled && { opacity: 0.4 }]} resizeMode="contain"/>
+                                <Text style={[styles.label, coinDisabled && { color: '#999' }]}>{item.label}</Text>
+                            </TouchableOpacity>
+                        )
+                    }}
                     contentContainerStyle={styles.list}
                 />
                 <View style={styles.bottomArea}>
@@ -126,10 +138,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 6,
         elevation: 3,
     },
+    disabledCard: {
+        backgroundColor: '#EEE',
+        borderWidth: 1,
+        borderColor: '#CCC',
+    },
     iconImage: {
         width: 60,
         height: 60,
-        // marginBottom: 8,
     },
     label: {
         marginTop: 12,
