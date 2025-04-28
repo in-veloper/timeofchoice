@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react'
 import { Alert, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, G, Path, Text as SvgText } from 'react-native-svg'
+import LottieView from 'lottie-react-native'
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../navigations/AppNavigators'
 
 interface RouletteResultProps {
     options: string[]
@@ -11,7 +16,7 @@ const { width } = Dimensions.get('window')
 const size = width * 0.8
 const radius = size / 2
 const center = { x: radius, y: radius }
-const colors = ['#2D9C8B', '#EAC67A', '#F4A261', '#E76F51', '#D9A5B3', '#2A4D59']
+const colors = ['#FF6B6B', '#4ECDC4', '#5567DC', '#7D5A9D', '#FF9F1C', '#2A9D8F']
 
 const degreesPerOption = (count: number) => 360 / count
 
@@ -37,9 +42,11 @@ const describeArc = (x: number, y: number, radius: number, startAngle: number, e
 }
 
 const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
     const rotation = useSharedValue(0)
     const sliceAngle = degreesPerOption(options.length)
     const [selectedLabel, setSelectedLabel] = useState('')
+    const [showResultModal, setShowResultModal] = useState(false)
 
     const animatedStyle = useAnimatedStyle(() => {
         'worklet'
@@ -56,13 +63,23 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
         rotation.value = withTiming(nextRotation, {
             duration: 5000,
             easing: Easing.bezier(0.25, 1, 0.5, 1)
-        }, () => {
-            const finalRotation = nextRotation % 360
-            // 여기에서: 0도(화살표) 기준, 원판이 얼마나 돌아갔는지 계산
-            const adjustedRotation = (360 - finalRotation) % 360
-            const sliceIndex = Math.floor(adjustedRotation / sliceAngle) % options.length
-            runOnJS(setSelectedLabel)(options[sliceIndex])
+        }, (isFinished) => {
+            if (isFinished) {
+                const finalRotation = nextRotation % 360
+                const adjustedRotation = (360 - finalRotation) % 360
+                const sliceIndex = Math.floor(adjustedRotation / sliceAngle) % options.length
+          
+                runOnJS(setSelectedLabel)(options[sliceIndex])
+                runOnJS(startShowResultModal)()
+            }
         })
+    }
+
+    const startShowResultModal = () => {
+        setShowResultModal(true)
+        setTimeout(() => {
+            setShowResultModal(false)
+        }, 5000);
     }
 
     useEffect(() => {
@@ -74,8 +91,25 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
         spin()
     }, [])
 
+    const handleBefore = () => {
+        navigation.goBack()
+    }
+
     return (
         <View style={styles.container}>
+            <View style={styles.topAdBanner}>
+                <BannerAd
+                    unitId={TestIds.BANNER}
+                    // unitId="ca-app-pub-4250906367423857/4132609676"
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                        requestNonPersonalizedAdsOnly: true
+                    }}
+                    onAdFailedToLoad={(error) => {
+                        console.log('배너 광고 Load 실패 : ', error)
+                    }}
+                />
+            </View>
             <View style={styles.wheelWrapper}>
                 <Svg width={size + 60} height={size + 60} style={styles.fixedSvg}>
                     <G>
@@ -93,7 +127,7 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
                                     key={i}
                                     cx={pos.x}
                                     cy={pos.y}
-                                    r={6}
+                                    r={5}
                                     fill="#FFF"
                                 />
                             )
@@ -122,7 +156,7 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
                                             x={textPos.x}
                                             y={textPos.y}
                                             fill="#FFF"
-                                            fontSize="14"
+                                            fontSize="16"
                                             fontWeight="bold"
                                             textAnchor="middle"
                                             alignmentBaseline="middle"
@@ -135,9 +169,44 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
                         </G>
                     </Svg>
                 </Animated.View>
-                <TouchableOpacity style={styles.button} onPress={spin}>
-                    <Text style={styles.buttonText}>다시 돌리기</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonRow}>
+                    <TouchableOpacity style={styles.button} onPress={handleBefore}>
+                        <Text style={styles.buttonText}>이전으로</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={spin}>
+                        <Text style={styles.buttonText}>다시 돌리기</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            {showResultModal && (
+                <View style={styles.resultModalContainer}>
+                    <LottieView
+                        source={require('../../../assets/animations/roulette_result_animation.json')}
+                        autoPlay
+                        loop
+                        style={{
+                            position: 'absolute',
+                            width: '100%',
+                            height: '100%',
+                        }}
+                    />
+                    <View style={styles.resultModal}>
+                        <Text style={styles.resultText}>{selectedLabel}</Text>
+                    </View>
+                </View>
+            )}
+            <View style={styles.bottomAdBanner}>
+                <BannerAd
+                    unitId={TestIds.BANNER}
+                    // unitId="ca-app-pub-4250906367423857/2819528005"
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                        requestNonPersonalizedAdsOnly: true
+                    }}
+                    onAdFailedToLoad={(error) => {
+                        console.log('배너 광고 Load 실패 : ', error)
+                    }}
+                />
             </View>
         </View>
     )
@@ -150,7 +219,15 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFF',
+        backgroundColor: '#EEF2F5',
+    },
+    topAdBanner: {
+        position: 'absolute',
+        height: 60,
+        top: 0,
+        backgroundColor: '#EEE',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     backgroundRim: {
         position: 'absolute',
@@ -215,12 +292,16 @@ const styles = StyleSheet.create({
         left: radius - 50,
     },
     centerText: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#FFF',
     },
-    button: {
+    buttonRow: {
+        flexDirection: 'row',
         marginTop: 60,
+        gap: 10
+    },
+    button: {
         backgroundColor: '#227DBD',
         paddingVertical: 14,
         paddingHorizontal: 24,
@@ -231,4 +312,44 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    resultModalContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)', 
+        zIndex: 10000,
+    },
+    resultModal: {
+        backgroundColor: '#fff',
+        paddingVertical: 20,
+        paddingHorizontal: 30,
+        borderRadius: 25,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 30, 
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.35,
+        shadowRadius: 12,
+        borderWidth: 1,
+        borderColor: '#ddd',
+    },
+    resultText: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: '#333',
+        textAlign: 'center',
+    },
+    bottomAdBanner: {
+        position: 'absolute',
+        height: 60,
+        bottom: 0,
+        backgroundColor: '#EEE',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 })

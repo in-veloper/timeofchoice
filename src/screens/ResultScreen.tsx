@@ -5,10 +5,16 @@ import RouletteResult from "../components/result/RouletteResult"
 import CardResult from "../components/result/CardResult"
 import CoinResult from "../components/result/CoinResult"
 import ListResult from "../components/result/ListResult"
+import { useEffect } from "react"
 
 const ResultScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, 'Result'>>()
     const { options, mode } = route.params
+
+    useEffect(() => {
+        console.log('ResultScreen options:', options)
+        console.log('ResultScreen mode:', mode)
+    }, [])
 
     if(mode === 'roulette') return <RouletteResult options={options} />
     if(mode === 'card') return <CardResult options={options} />
@@ -16,9 +22,7 @@ const ResultScreen = () => {
     if(mode === 'list') return <ListResult options={options} />
 
     return (
-        <View>
-
-        </View>
+        <View />
     )
 }
 

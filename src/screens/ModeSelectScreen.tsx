@@ -13,8 +13,8 @@ const icons = {
 
 const selectionModes = [
     { key: 'roulette', label: '룰렛', image: icons.roulette },
-    { key: 'cards-playing-outline', label: '카드', image: icons.cards },
-    { key: 'circle-multiple-outline', label: '동전', image: icons.coin },
+    { key: 'card', label: '카드', image: icons.cards },
+    { key: 'coin', label: '동전', image: icons.coin },
     { key: 'list', label: '리스트', image: icons.list }
 ]
 
@@ -32,7 +32,7 @@ const ModeSelectScreen = () => {
             <View style={styles.topAdBanner}>
                 <BannerAd
                     unitId={TestIds.BANNER}
-                    // unitId="ca-app-pub-4250906367423857/5759406751"
+                    // unitId="ca-app-pub-4250906367423857/1897087321"
                     size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                     requestOptions={{
                         requestNonPersonalizedAdsOnly: true
@@ -69,7 +69,7 @@ const ModeSelectScreen = () => {
             <View style={styles.bottomAdBanner}>
                 <BannerAd
                     unitId={TestIds.BANNER}
-                    // unitId="ca-app-pub-4250906367423857/4963239955"
+                    // unitId="ca-app-pub-4250906367423857/8071854680"
                     size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                     requestOptions={{
                         requestNonPersonalizedAdsOnly: true
