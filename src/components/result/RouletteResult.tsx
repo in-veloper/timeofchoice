@@ -7,6 +7,7 @@ import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../navigations/AppNavigators'
+import { useOptionStore } from '../../store/optionStore'
 
 interface RouletteResultProps {
     options: string[]
@@ -41,8 +42,9 @@ const describeArc = (x: number, y: number, radius: number, startAngle: number, e
     ].join(' ')
 }
 
-const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
+const RouletteResult: React.FC<RouletteResultProps> = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+    const { options } = useOptionStore()
     const rotation = useSharedValue(0)
     const sliceAngle = degreesPerOption(options.length)
     const [selectedLabel, setSelectedLabel] = useState('')
@@ -91,7 +93,7 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
         spin()
     }, [])
 
-    const handleBefore = () => {
+    const handleGoBack = () => {
         navigation.goBack()
     }
 
@@ -170,7 +172,7 @@ const RouletteResult: React.FC<RouletteResultProps> = ({ options }) => {
                     </Svg>
                 </Animated.View>
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.button} onPress={handleBefore}>
+                    <TouchableOpacity style={styles.button} onPress={handleGoBack}>
                         <Text style={styles.buttonText}>이전으로</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={spin}>

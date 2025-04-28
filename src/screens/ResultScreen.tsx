@@ -6,10 +6,12 @@ import CardResult from "../components/result/CardResult"
 import CoinResult from "../components/result/CoinResult"
 import ListResult from "../components/result/ListResult"
 import { useEffect } from "react"
+import { useOptionStore } from "../store/optionStore"
 
 const ResultScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, 'Result'>>()
-    const { options, mode } = route.params
+    const { mode } = route.params
+    const { options } = useOptionStore()
 
     useEffect(() => {
         console.log('ResultScreen options:', options)

@@ -7,8 +7,8 @@ import ResultScreen from '../screens/ResultScreen'
 
 export type RootStackParamList = {
     Home: undefined
-    ModeSelect: { options: string[] }
-    Result: { mode: string; options: string[] }
+    ModeSelect: undefined
+    Result: { mode: string }
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>()

@@ -3,6 +3,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { RootStackParamList } from "../navigations/AppNavigators"
 import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads"
+import { useOptionStore } from "../store/optionStore"
 
 const icons = {
     roulette: require('../../assets/icons/roulette.png'),
@@ -20,11 +21,10 @@ const selectionModes = [
 
 const ModeSelectScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
-    const route = useRoute<RouteProp<RootStackParamList, 'ModeSelect'>>()
-    const { options } = route.params
+    const { options } = useOptionStore()
 
     const handleSelect = (mode: 'roulette' | 'card' | 'coin' | 'list') => {
-        navigation.navigate('Result', { options, mode })
+        navigation.navigate('Result', { mode })
     }
 
     return (

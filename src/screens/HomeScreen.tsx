@@ -5,12 +5,14 @@ import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import { RootStackParamList } from "../navigations/AppNavigators"
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads"
+import { useOptionStore } from "../store/optionStore"
 
 const MAX_ITEMS = 6
 
 const HomeScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
     const [items, setItems] = useState(['', ''])    // 기본 2개
+    const { setOptions } = useOptionStore()
 
     const handleAddInput = () => {
         if(items.length >= MAX_ITEMS) {
@@ -30,7 +32,9 @@ const HomeScreen = () => {
 
     const handleNext = () => {
         if(!canProceed) return
-        navigation.navigate('ModeSelect', { options: items.filter((v) => v.trim()) })
+        const filtered = items.filter((v) => v.trim())
+        setOptions(filtered)
+        navigation.navigate('ModeSelect')
     }
 
     const handleRemoveInput = (index: number) => {
