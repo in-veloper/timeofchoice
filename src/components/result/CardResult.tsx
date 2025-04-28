@@ -85,7 +85,7 @@ const CardResult: React.FC<CardResultProps> = () => {
             <View style={styles.topAdBanner}>
                 <BannerAd
                     unitId={TestIds.BANNER}
-                    // unitId="ca-app-pub-4250906367423857/4132609676"
+                    // unitId="ca-app-pub-4250906367423857/9122880779"
                     size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                     requestOptions={{
                         requestNonPersonalizedAdsOnly: true
@@ -143,7 +143,7 @@ const CardResult: React.FC<CardResultProps> = () => {
             <View style={styles.bottomAdBanner}>
                 <BannerAd
                     unitId={TestIds.BANNER}
-                    // unitId="ca-app-pub-4250906367423857/2819528005"
+                    // unitId="ca-app-pub-4250906367423857/4293210013"
                     size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
                     requestOptions={{
                         requestNonPersonalizedAdsOnly: true
