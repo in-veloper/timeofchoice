@@ -1,9 +1,8 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { RootStackParamList } from "../navigations/AppNavigators"
 import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads"
-import { useOptionStore } from "../store/optionStore"
 
 const icons = {
     roulette: require('../../assets/icons/roulette.png'),
@@ -21,7 +20,6 @@ const selectionModes = [
 
 const ModeSelectScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
-    const { options } = useOptionStore()
 
     const handleSelect = (mode: 'roulette' | 'card' | 'coin' | 'list') => {
         navigation.navigate('Result', { mode })

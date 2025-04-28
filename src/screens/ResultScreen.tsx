@@ -13,11 +13,6 @@ const ResultScreen = () => {
     const { mode } = route.params
     const { options } = useOptionStore()
 
-    useEffect(() => {
-        console.log('ResultScreen options:', options)
-        console.log('ResultScreen mode:', mode)
-    }, [])
-
     if(mode === 'roulette') return <RouletteResult options={options} />
     if(mode === 'card') return <CardResult options={options} />
     if(mode === 'coin') return <CoinResult options={options} />
