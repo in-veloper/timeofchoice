@@ -1,13 +1,13 @@
-import { useMemo, useRef, useState } from "react"
-import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
-import Animated, { Easing, interpolate, SharedValue, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
-import { useOptionStore } from "../../store/optionStore"
-import { useNavigation } from "@react-navigation/native"
-import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-import { RootStackParamList } from "../../navigations/AppNavigators"
+import { useMemo, useRef, useState } from 'react'
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import Animated, { Easing, interpolate, SharedValue, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import { useOptionStore } from '../../store/optionStore'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../navigations/AppNavigators'
 import Fontisto from 'react-native-vector-icons/Fontisto'
-import LottieView from "lottie-react-native"
-import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads"
+import LottieView from 'lottie-react-native'
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads'
 
 interface CardResultProps {
     options?: string[]
@@ -243,14 +243,15 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#227DBD',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingHorizontal: 24,
+        paddingVertical: 14,
         borderRadius: 10,
+        elevation: 5
     },
     buttonText: {
         color: '#FFF',
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 18,
     },
     resultModalContainer: {
         position: 'absolute',

@@ -84,15 +84,6 @@ const RouletteResult: React.FC<RouletteResultProps> = () => {
         }, 5000);
     }
 
-    useEffect(() => {
-        if (!options || options.length < 2) {
-            Alert.alert('경고', '최소 2개 이상의 항목이 필요합니다.')
-            return
-        }
-
-        spin()
-    }, [])
-
     const handleGoBack = () => {
         navigation.goBack()
     }
@@ -176,7 +167,7 @@ const RouletteResult: React.FC<RouletteResultProps> = () => {
                         <Text style={styles.buttonText}>이전으로</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={spin}>
-                        <Text style={styles.buttonText}>다시 돌리기</Text>
+                        <Text style={styles.buttonText}>룰렛 돌리기</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -308,6 +299,7 @@ const styles = StyleSheet.create({
         paddingVertical: 14,
         paddingHorizontal: 24,
         borderRadius: 12,
+        elevation: 5
     },
     buttonText: {
         color: '#fff',

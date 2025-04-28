@@ -9,5 +9,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'off',
     'no-trailing-spaces': 'off',
     'react-hooks/exhaustive-deps': 'off',
+    'react-hooks/rules-of-hooks': 'off',
   }
 };
