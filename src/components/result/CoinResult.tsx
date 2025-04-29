@@ -53,18 +53,20 @@ const CoinResult: React.FC<CoinResultProps> = () => {
     })
 
     const frontTextStyle = useAnimatedStyle(() => {
-        const rotateY = interpolate(rotation.value % 360, [0, 180], [0, 180])
+        const angle = rotation.value % 360
+        const opacity = interpolate(angle, [0, 90, 180, 270, 360], [1, 0, 0, 0, 1])
         return {
-            transform: [{ rotateY: `${rotateY}deg` }],
-            backfaceVisibility: 'hidden',
+            opacity: opacity,
+            transform: [{ rotateY: '0deg' }],
         }
     })
 
     const backTextStyle = useAnimatedStyle(() => {
-        const rotateY = interpolate(rotation.value % 360, [0, 180], [180, 360])
+        const angle = rotation.value % 360
+        const opacity = interpolate(angle, [0, 90, 180, 270, 360], [0, 0, 1, 0, 0])
         return {
-            transform: [{ rotateY: `${rotateY}deg` }],
-            backfaceVisibility: 'hidden',
+            opacity: opacity,
+            transform: [{ rotateY: '180deg' }],
         }
     })
 
