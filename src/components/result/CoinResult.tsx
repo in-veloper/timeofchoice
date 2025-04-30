@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
         zIndex: 10000,
     },
     resultModal: {
-        backgroundColor: '#fff',
+        backgroundColor: '#FFF',
         paddingVertical: 20,
         paddingHorizontal: 30,
         borderRadius: 25,
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.35,
         shadowRadius: 12,
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: '#DDD',
     },
     resultText: {
         fontSize: 25,

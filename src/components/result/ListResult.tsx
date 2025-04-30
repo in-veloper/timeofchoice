@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { RootStackParamList } from "../../navigations/AppNavigators"
 import LottieView from "lottie-react-native"
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
+import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads"
 
 interface ListResultProps {
     options: string[]
@@ -30,7 +31,7 @@ const ListResult: React.FC<ListResultProps> = () => {
         let spinCount = 0
         let speed = 50
         const targetIndex = Math.floor(Math.random() * options.length)
-        let totalSteps = options.length * 5 + targetIndex
+        let totalSteps = options.length * 7 + targetIndex
 
         const spin = () => {
             setCurrentIndex(prev => {
@@ -55,20 +56,6 @@ const ListResult: React.FC<ListResultProps> = () => {
 
                 return nextIndex
             })
-            // setCurrentIndex(prev => (prev + 1) % options.length)
-            // current++
-
-            // if(current < totalSteps) {
-            //     speed += 10                
-            //     setTimeout(spin, speed)
-            // }else{
-            //     setIsSpining(false)
-            //     const finalIndex = (current + 1) % options.length
-
-            //     setSelectedIndex(finalIndex)
-            //     setTimeout(() => setShowResultModal(true), 1500)
-            //     setTimeout(() => setShowResultModal(false), 6500)
-            // }
         }
 
         spin()
@@ -86,7 +73,7 @@ const ListResult: React.FC<ListResultProps> = () => {
     useEffect(() => {
         animations.forEach((anim, idx) => {
             if(idx === currentIndex) {
-                anim.scale.value = withTiming(1.2, { duration: 150 })
+                anim.scale.value = withTiming(1.05, { duration: 150 })
                 anim.translateY.value = withTiming(-5, { duration: 150 })
             }else{
                 anim.scale.value = withTiming(1, { duration: 150 })
@@ -97,6 +84,19 @@ const ListResult: React.FC<ListResultProps> = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.topAdBanner}>
+                <BannerAd
+                    unitId={TestIds.BANNER}
+                    // unitId="ca-app-pub-4250906367423857/1604920192"
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                        requestNonPersonalizedAdsOnly: true
+                    }}
+                    onAdFailedToLoad={(error) => {
+                        console.log('배너 광고 Load 실패 : ', error)
+                    }}
+                />
+            </View>
             {options.map((option, index) => {
                 const animatedStyle = useAnimatedStyle(() => ({
                     transform: [
@@ -114,7 +114,7 @@ const ListResult: React.FC<ListResultProps> = () => {
                             animatedStyle
                         ]}
                     >
-                        <Text style={styles.itemText}>{option}</Text>
+                        <Text style={[styles.itemText, index === currentIndex && styles.highlightedItemText]}>{option}</Text>
                     </Animated.View>
                 )
             })}
@@ -126,6 +126,20 @@ const ListResult: React.FC<ListResultProps> = () => {
                 <TouchableOpacity style={styles.button} onPress={startSpin}>
                     <Text style={styles.buttonText}>선택 시작</Text>
                 </TouchableOpacity>
+            </View>
+
+            <View style={styles.bottomAdBanner}>
+                <BannerAd
+                    unitId={TestIds.BANNER}
+                    // unitId="ca-app-pub-4250906367423857/7639604255"
+                    size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                    requestOptions={{
+                        requestNonPersonalizedAdsOnly: true
+                    }}
+                    onAdFailedToLoad={(error) => {
+                        console.log('배너 광고 Load 실패 : ', error)
+                    }}
+                />
             </View>
 
             {showResultModal && (
@@ -159,6 +173,14 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         backgroundColor: "#F0F0F0"
     },
+    topAdBanner: {
+        position: 'absolute',
+        height: 60,
+        top: 0,
+        backgroundColor: '#EEE',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     item: {
         paddingVertical: 12,
         paddingHorizontal: 20,
@@ -177,6 +199,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "#333",
         fontWeight: "bold",
+    },
+    highlightedItemText: {
+        color: '#FFF'
     },
     buttonRow: {
         flexDirection: 'row',
@@ -207,13 +232,19 @@ const styles = StyleSheet.create({
         zIndex: 10000,
     },
     resultModal: {
-        backgroundColor: '#fff',
-        paddingVertical: 30,
-        paddingHorizontal: 40,
-        borderRadius: 20,
+        backgroundColor: '#FFF',
+        paddingVertical: 20,
+        paddingHorizontal: 30,
+        borderRadius: 25,
         alignItems: 'center',
         justifyContent: 'center',
-        elevation: 20,
+        elevation: 30,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.35,
+        shadowRadius: 12,
+        borderWidth: 1,
+        borderColor: '#DDD',
     },
     resultText: {
         fontSize: 28,
@@ -221,4 +252,12 @@ const styles = StyleSheet.create({
         color: '#333',
         textAlign: 'center',
     },
+    bottomAdBanner: {
+        position: 'absolute',
+        height: 60,
+        bottom: 0,
+        backgroundColor: '#EEE',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 })
